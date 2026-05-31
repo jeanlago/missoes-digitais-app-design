@@ -1,5 +1,6 @@
 import { useState, useRef, ReactNode } from 'react';
-import { ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { HelpButton } from './HelpButton';
 
 interface SwipeContainerProps {
   children: ReactNode;
@@ -109,16 +110,11 @@ export function SwipeContainer({ children, currentPage, onNavigate, onHelp, onEx
             >
               <ChevronRight size={32} strokeWidth={2.5} />
             </button>
-
-            <button
-              onClick={onHelp}
-              className="p-3 rounded-full bg-[#FF6B6B] text-white shadow-lg active:scale-95 transition-all shrink-0"
-            >
-              <AlertCircle size={28} strokeWidth={2.5} />
-            </button>
           </div>
         </div>
       )}
+
+      {showNavigation && <HelpButton variant="labeled" onClick={onHelp} />}
 
       <div className={showNavigation ? 'pt-24' : ''}>
 
