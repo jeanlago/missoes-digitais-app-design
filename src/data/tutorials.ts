@@ -1,4 +1,5 @@
 import { MessageSquare, Image, Video, UserPlus, LucideIcon } from 'lucide-react';
+import { publicAsset } from '../utils/publicAsset';
 
 export type TutorialId = 'mensagem' | 'imagem' | 'video' | 'contato';
 
@@ -22,7 +23,7 @@ export const tutorials: Tutorial[] = [
     title: 'Salvar um contato',
     description:
       'Aprenda a guardar o nome e o telefone de alguém no celular para ligar ou mandar mensagem depois com facilidade.',
-    videoSrc: '/videos/salvar-contato.mp4',
+    videoSrc: publicAsset('videos/salvar-contato.mp4'),
     category: 'Contatos',
     steps: [
       'Abrir o aplicativo Contatos ou Telefone',
@@ -64,7 +65,7 @@ export const tutorials: Tutorial[] = [
     title: 'Mandar mensagem no WhatsApp',
     description:
       'Aprenda a abrir o WhatsApp, escolher um contato, escrever e enviar uma mensagem de texto.',
-    videoSrc: '/videos/whatsapp-mensagem.mp4',
+    videoSrc: publicAsset('videos/whatsapp-mensagem.mp4'),
     category: 'WhatsApp',
     steps: [
       'Abrir o WhatsApp',
@@ -100,7 +101,7 @@ export const tutorials: Tutorial[] = [
     title: 'Enviar uma imagem',
     description:
       'Veja como escolher uma foto da galeria e enviar para alguém no WhatsApp.',
-    videoSrc: '/videos/whatsapp-imagem.mp4',
+    videoSrc: publicAsset('videos/whatsapp-imagem.mp4'),
     category: 'WhatsApp',
     steps: [
       'Abrir uma conversa no WhatsApp',
@@ -136,7 +137,7 @@ export const tutorials: Tutorial[] = [
     title: 'Enviar um vídeo',
     description:
       'Aprenda a selecionar um vídeo do celular e enviar para um contato no WhatsApp.',
-    videoSrc: '/videos/whatsapp-video.mp4',
+    videoSrc: publicAsset('videos/whatsapp-video.mp4'),
     category: 'WhatsApp',
     steps: [
       'Abrir uma conversa no WhatsApp',
