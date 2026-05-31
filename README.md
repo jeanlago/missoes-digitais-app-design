@@ -14,10 +14,11 @@ npm run dev
 O deploy é automático ao enviar alterações para a branch `main`.
 
 1. No GitHub, abra **Settings → Pages**
-2. Em **Build and deployment**, escolha **GitHub Actions**
-3. Após o workflow concluir, o app ficará em:
+2. Em **Build and deployment**, escolha **GitHub Actions** (não use "Deploy from a branch")
+3. Vá em **Actions** e confira se o workflow **Deploy GitHub Pages** terminou com sucesso
+4. O app ficará em:
 
-`https://SEU-USUARIO.github.io/missoes-digitais/`
+`https://jeanlago.github.io/missoes-digitais-app-design/`
 
 ## Build manual
 
