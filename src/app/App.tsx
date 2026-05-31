@@ -31,11 +31,30 @@ export default function App() {
   const handleNavigate = (page: string, from?: string, tutorialId?: TutorialId) => {
     if (from) {
       setReturnPage(from);
+    } else if (page === 'lost') {
+      setReturnPage(currentPage);
+    } else if (page === 'help' && currentPage !== 'lost') {
+      setReturnPage(currentPage);
     }
     if (tutorialId) {
       setActiveTutorialId(tutorialId);
     }
     setCurrentPage(page);
+  };
+
+  const handleOpenLost = () => {
+    setReturnPage(currentPage);
+    setCurrentPage('lost');
+  };
+
+  const resolveBackPage = (page: string) => (page === 'lost' ? 'home' : page);
+
+  const handleBackFromHelp = () => {
+    setCurrentPage(resolveBackPage(returnPage));
+  };
+
+  const handleCloseLost = () => {
+    setCurrentPage(resolveBackPage(returnPage));
   };
 
   const renderPage = () => {
@@ -63,9 +82,19 @@ export default function App() {
       case 'manual':
         return <ManualPage onNavigate={handleNavigate} />;
       case 'help':
-        return <HelpPage onNavigate={handleNavigate} />;
+        return <HelpPage onNavigate={handleNavigate} onBack={handleBackFromHelp} />;
       case 'lost':
-        return <LostPage onNavigate={handleNavigate} onExplain={() => setShowExplain(true)} />;
+        return (
+          <LostPage
+            onNavigate={handleNavigate}
+            previousPage={returnPage}
+            onExplain={() => {
+              setShowExplain(true);
+              setCurrentPage(resolveBackPage(returnPage));
+            }}
+            onCancel={handleCloseLost}
+          />
+        );
       case 'missions':
         return <MissionsPage onNavigate={handleNavigate} />;
       default:
@@ -81,7 +110,7 @@ export default function App() {
             if (currentPage === 'daily-task') {
               setCurrentPage(returnPage);
             } else if (currentPage === 'help') {
-              setCurrentPage(returnPage === 'home' ? 'home' : returnPage);
+              handleBackFromHelp();
             } else if (['quiz', 'memory-game', 'click', 'steps', 'scam'].includes(currentPage)) {
               setCurrentPage('games');
             } else if (currentPage === 'task-steps') {
@@ -92,13 +121,13 @@ export default function App() {
               setCurrentPage('home');
             }
           }}
-          onHelp={() => setCurrentPage('lost')}
+          onHelp={handleOpenLost}
         />
       )}
       <SwipeContainer
         currentPage={currentPage}
         onNavigate={handleNavigate}
-        onHelp={() => setCurrentPage('lost')}
+        onHelp={handleOpenLost}
         onExplain={() => setShowExplain(true)}
       >
         {renderPage()}

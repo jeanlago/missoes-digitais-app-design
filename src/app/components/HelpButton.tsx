@@ -11,7 +11,7 @@ export function HelpButton({ onClick, variant = 'labeled' }: HelpButtonProps) {
     return (
       <button
         onClick={onClick}
-        className="fixed top-5 right-6 bg-[#FF6B6B] text-white rounded-full p-3 shadow-2xl hover:bg-[#E85555] transition-all active:scale-95 z-50"
+        className="fixed top-5 right-6 bg-[#FF6B6B] text-white rounded-full p-3 drop-shadow-2xl hover:bg-[#E85555] transition-all active:scale-95 z-50"
         aria-label="Pedir ajuda"
       >
         <AlertCircle size={28} strokeWidth={2.5} />
@@ -22,7 +22,7 @@ export function HelpButton({ onClick, variant = 'labeled' }: HelpButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="fixed top-5 right-0 flex items-center gap-2 bg-[#FF6B6B] text-white rounded-l-full py-3 pl-4 pr-5 shadow-2xl hover:bg-[#E85555] transition-all active:scale-95 z-50"
+      className="fixed top-5 right-0 flex items-center gap-2 bg-[#FF6B6B] text-white rounded-l-full py-3 pl-4 pr-5 drop-shadow-2xl hover:bg-[#E85555] transition-all active:scale-95 z-50 overflow-hidden"
       aria-label="Pedir ajuda"
     >
       <AlertCircle size={28} strokeWidth={2.5} />

@@ -72,7 +72,7 @@ export function TutorialPage({ tutorialId, returnTo, onNavigate }: TutorialPageP
           variant="secondary"
           fullWidth
           icon={<HelpCircle />}
-          onClick={() => onNavigate('help')}
+          onClick={() => onNavigate('help', returnTo)}
         >
           Pedir ajuda
         </Button>

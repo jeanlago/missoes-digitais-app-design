@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { motion, LayoutGroup } from 'motion/react';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { GameResultActions } from '../components/GameResultActions';
-import { GripVertical, CheckCircle2, XCircle } from 'lucide-react';
+import { ChevronUp, ChevronDown, CheckCircle2, XCircle } from 'lucide-react';
 
 interface StepsOrderGamePageProps {
   onNavigate: (page: string) => void;
@@ -43,6 +44,7 @@ export function StepsOrderGamePage({ onNavigate }: StepsOrderGamePageProps) {
   const [orderedSteps, setOrderedSteps] = useState<Step[]>(
     [...challenges[currentChallenge].steps].sort(() => Math.random() - 0.5)
   );
+  const [lastMovedId, setLastMovedId] = useState<number | null>(null);
 
   const currentCh = challenges[currentChallenge];
   const isLastChallenge = currentChallenge === challenges.length - 1;
@@ -53,8 +55,11 @@ export function StepsOrderGamePage({ onNavigate }: StepsOrderGamePageProps) {
 
     if (targetIndex < 0 || targetIndex >= newSteps.length) return;
 
+    const movedId = newSteps[index].id;
     [newSteps[index], newSteps[targetIndex]] = [newSteps[targetIndex], newSteps[index]];
+    setLastMovedId(movedId);
     setOrderedSteps(newSteps);
+    window.setTimeout(() => setLastMovedId(null), 450);
   };
 
   const handleCheck = () => {
@@ -91,46 +96,73 @@ export function StepsOrderGamePage({ onNavigate }: StepsOrderGamePageProps) {
 
       {!showResult ? (
         <>
-          <div className="space-y-4 mb-8">
-            {orderedSteps.map((step, index) => (
-              <Card key={step.id} className="bg-white">
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col gap-2">
-                    <button
-                      onClick={() => moveStep(index, 'up')}
-                      disabled={index === 0}
-                      className={`p-2 rounded-lg transition-all ${
-                        index === 0
-                          ? 'opacity-30 cursor-not-allowed'
-                          : 'bg-[#E8F1F8] text-[#4A90E2] active:bg-[#4A90E2] active:text-white'
-                      }`}
-                    >
-                      <GripVertical size={24} className="rotate-180" />
-                    </button>
-                    <button
-                      onClick={() => moveStep(index, 'down')}
-                      disabled={index === orderedSteps.length - 1}
-                      className={`p-2 rounded-lg transition-all ${
-                        index === orderedSteps.length - 1
-                          ? 'opacity-30 cursor-not-allowed'
-                          : 'bg-[#E8F1F8] text-[#4A90E2] active:bg-[#4A90E2] active:text-white'
-                      }`}
-                    >
-                      <GripVertical size={24} />
-                    </button>
-                  </div>
-                  <div className="flex-1 bg-[#F8FAFB] p-5 rounded-xl">
+          <LayoutGroup>
+            <div className="space-y-4 mb-8">
+              {orderedSteps.map((step, index) => (
+                <motion.div
+                  key={step.id}
+                  layout
+                  initial={false}
+                  className="rounded-3xl overflow-hidden"
+                  animate={{
+                    scale: lastMovedId === step.id ? 1.02 : 1,
+                  }}
+                  transition={{
+                    layout: { type: 'spring', stiffness: 420, damping: 34, mass: 0.9 },
+                    scale: { duration: 0.25 },
+                  }}
+                >
+                  <Card
+                    className={`bg-white transition-shadow ${
+                      lastMovedId === step.id
+                        ? 'shadow-xl shadow-[#4A90E2]/25'
+                        : 'shadow-lg'
+                    }`}
+                  >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-[#4A90E2] text-white flex items-center justify-center text-2xl shrink-0">
-                        {index + 1}
+                      <div className="flex flex-col gap-2">
+                        <button
+                          onClick={() => moveStep(index, 'up')}
+                          disabled={index === 0}
+                          aria-label="Mover passo para cima"
+                          className={`p-2 rounded-lg transition-all ${
+                            index === 0
+                              ? 'opacity-30 cursor-not-allowed'
+                              : 'bg-[#E8F1F8] text-[#4A90E2] active:bg-[#4A90E2] active:text-white'
+                          }`}
+                        >
+                          <ChevronUp size={28} strokeWidth={2.5} />
+                        </button>
+                        <button
+                          onClick={() => moveStep(index, 'down')}
+                          disabled={index === orderedSteps.length - 1}
+                          aria-label="Mover passo para baixo"
+                          className={`p-2 rounded-lg transition-all ${
+                            index === orderedSteps.length - 1
+                              ? 'opacity-30 cursor-not-allowed'
+                              : 'bg-[#E8F1F8] text-[#4A90E2] active:bg-[#4A90E2] active:text-white'
+                          }`}
+                        >
+                          <ChevronDown size={28} strokeWidth={2.5} />
+                        </button>
                       </div>
-                      <p className="text-xl">{step.text}</p>
+                      <div className="flex-1 bg-[#F8FAFB] p-5 rounded-2xl overflow-hidden">
+                        <div className="flex items-center gap-4">
+                          <motion.div
+                            layout
+                            className="w-12 h-12 rounded-full bg-[#4A90E2] text-white flex items-center justify-center text-2xl shrink-0"
+                          >
+                            {index + 1}
+                          </motion.div>
+                          <p className="text-xl">{step.text}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </LayoutGroup>
 
           <Button variant="primary" fullWidth onClick={handleCheck}>
             Verificar ordem

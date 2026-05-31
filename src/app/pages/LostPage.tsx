@@ -1,13 +1,15 @@
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { Home, Phone } from 'lucide-react';
+import { Home, Phone, Info, X } from 'lucide-react';
 
 interface LostPageProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, from?: string) => void;
+  previousPage: string;
   onExplain: () => void;
+  onCancel: () => void;
 }
 
-export function LostPage({ onNavigate, onExplain }: LostPageProps) {
+export function LostPage({ onNavigate, previousPage, onExplain, onCancel }: LostPageProps) {
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-[#FFE8E8] to-[#FFF5F5] z-50 flex items-center justify-center p-6">
       <div className="max-w-[600px] w-full">
@@ -36,10 +38,30 @@ export function LostPage({ onNavigate, onExplain }: LostPageProps) {
             variant="primary"
             fullWidth
             icon={<Phone />}
-            onClick={() => onNavigate('help')}
+            onClick={() => onNavigate('help', previousPage)}
             size="large"
           >
             Chamar ajuda
+          </Button>
+
+          <Button
+            variant="secondary"
+            fullWidth
+            icon={<Info />}
+            onClick={onExplain}
+            size="large"
+          >
+            Explicar esta tela
+          </Button>
+
+          <Button
+            variant="secondary"
+            fullWidth
+            icon={<X />}
+            onClick={onCancel}
+            size="large"
+          >
+            Cancelar ação
           </Button>
         </div>
       </div>

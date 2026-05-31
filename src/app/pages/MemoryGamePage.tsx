@@ -1,21 +1,37 @@
 import { useState, useEffect } from 'react';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { Smartphone, Phone, Camera, Lock, Settings, ShoppingCart } from 'lucide-react';
+import { Smartphone, Phone, Camera, Lock, Settings, ShoppingCart, LucideIcon } from 'lucide-react';
 
 interface MemoryGamePageProps {
   onNavigate: (page: string) => void;
 }
 
+interface MemoryItem {
+  key: string;
+  icon: LucideIcon;
+  label: string;
+}
+
 interface CardType {
   id: number;
-  icon: any;
+  itemKey: string;
+  icon: LucideIcon;
+  label: string;
   isFlipped: boolean;
   isMatched: boolean;
 }
 
+const memoryItems: MemoryItem[] = [
+  { key: 'smartphone', icon: Smartphone, label: 'Celular' },
+  { key: 'phone', icon: Phone, label: 'Chamadas' },
+  { key: 'camera', icon: Camera, label: 'Câmera' },
+  { key: 'lock', icon: Lock, label: 'Cadeado' },
+  { key: 'settings', icon: Settings, label: 'Configurações' },
+  { key: 'shopping', icon: ShoppingCart, label: 'Compras' },
+];
+
 export function MemoryGamePage({ onNavigate }: MemoryGamePageProps) {
-  const icons = [Smartphone, Phone, Camera, Lock, Settings, ShoppingCart];
   const [cards, setCards] = useState<CardType[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -25,12 +41,14 @@ export function MemoryGamePage({ onNavigate }: MemoryGamePageProps) {
   }, []);
 
   const initializeGame = () => {
-    const duplicatedIcons = [...icons, ...icons];
-    const shuffled = duplicatedIcons
+    const duplicatedItems = [...memoryItems, ...memoryItems];
+    const shuffled = duplicatedItems
       .sort(() => Math.random() - 0.5)
-      .map((icon, index) => ({
+      .map((item, index) => ({
         id: index,
-        icon,
+        itemKey: item.key,
+        icon: item.icon,
+        label: item.label,
         isFlipped: false,
         isMatched: false
       }));
@@ -51,7 +69,7 @@ export function MemoryGamePage({ onNavigate }: MemoryGamePageProps) {
       setMoves(moves + 1);
       const [first, second] = newFlipped;
 
-      if (cards[first].icon === cards[second].icon) {
+      if (cards[first].itemKey === cards[second].itemKey) {
         setCards(prev => prev.map(card =>
           card.id === first || card.id === second
             ? { ...card, isMatched: true }
@@ -75,7 +93,7 @@ export function MemoryGamePage({ onNavigate }: MemoryGamePageProps) {
         <h1 className="text-4xl mb-4">Jogo da memória</h1>
         <div className="flex justify-between items-center">
           <p className="text-2xl text-[#6B7280]">Movimentos: {moves}</p>
-          <p className="text-2xl text-[#6B7280]">Pares: {matchedCount / 2} de {icons.length}</p>
+          <p className="text-2xl text-[#6B7280]">Pares: {matchedCount / 2} de {memoryItems.length}</p>
         </div>
       </div>
 
@@ -94,7 +112,7 @@ export function MemoryGamePage({ onNavigate }: MemoryGamePageProps) {
         </Card>
       ) : (
         <>
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-4 mb-8">
           {cards.map((card) => {
             const isFlipped = flippedCards.includes(card.id) || card.isMatched;
             const Icon = card.icon;
@@ -104,15 +122,24 @@ export function MemoryGamePage({ onNavigate }: MemoryGamePageProps) {
                 key={card.id}
                 onClick={() => handleCardClick(card.id)}
                 className={`
-                  aspect-square rounded-2xl flex items-center justify-center transition-all transform
+                  min-h-[140px] rounded-2xl flex items-center justify-center transition-all transform p-3
                   ${isFlipped
-                    ? 'bg-white shadow-lg'
+                    ? 'bg-white shadow-lg text-[#4A90E2]'
                     : 'bg-gradient-to-br from-[#9B59B6] to-[#8E44AD] text-white shadow-md hover:scale-105'
                   }
                   ${card.isMatched ? 'opacity-50' : ''}
                 `}
               >
-                {isFlipped ? <Icon size={56} strokeWidth={2} /> : <span className="text-5xl">?</span>}
+                {isFlipped ? (
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    <Icon size={48} strokeWidth={2} />
+                    <span className="text-lg font-medium text-[#1E293B] text-center leading-tight">
+                      {card.label}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-5xl">?</span>
+                )}
               </button>
             );
           })}

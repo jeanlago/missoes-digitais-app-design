@@ -2,31 +2,43 @@ import { useState } from 'react';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Phone, MessageSquare, Share2, User } from 'lucide-react';
+import { trustedContacts, getContactLabel } from '../../data/trustedContacts';
+import { callContact, messageContact, shareDoubt } from '../../utils/helpActions';
 
 interface HelpPageProps {
   onNavigate: (page: string) => void;
+  onBack: () => void;
 }
 
-export function HelpPage({ onNavigate }: HelpPageProps) {
+export function HelpPage({ onNavigate, onBack }: HelpPageProps) {
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [isSharing, setIsSharing] = useState(false);
 
-  const contacts = [
-    {
-      id: 'daughter',
-      name: 'Filha - Maria',
-      status: 'online'
-    },
-    {
-      id: 'son',
-      name: 'Filho - Pedro',
-      status: 'online'
-    },
-    {
-      id: 'grandson',
-      name: 'Neto - João',
-      status: 'offline'
-    }
-  ];
+  const showFeedback = (type: 'success' | 'error', message: string) => {
+    setFeedback({ type, message });
+    window.setTimeout(() => setFeedback(null), 4500);
+  };
+
+  const handleCall = () => {
+    if (!selectedContact) return;
+    const result = callContact(selectedContact);
+    showFeedback(result.ok ? 'success' : 'error', result.message);
+  };
+
+  const handleMessage = () => {
+    if (!selectedContact) return;
+    const result = messageContact(selectedContact);
+    showFeedback(result.ok ? 'success' : 'error', result.message);
+  };
+
+  const handleShare = async () => {
+    if (!selectedContact || isSharing) return;
+    setIsSharing(true);
+    const result = await shareDoubt(selectedContact);
+    showFeedback(result.ok ? 'success' : 'error', result.message);
+    setIsSharing(false);
+  };
 
   return (
     <div className="p-6 pt-24 pb-36 max-w-[600px] mx-auto">
@@ -35,8 +47,20 @@ export function HelpPage({ onNavigate }: HelpPageProps) {
         <p className="text-2xl text-[#6B7280]">Escolha quem pode te ajudar</p>
       </div>
 
+      {feedback && (
+        <Card
+          className={`mb-6 ${
+            feedback.type === 'success'
+              ? 'bg-[#E8F8F0] border-4 border-[#51C878]'
+              : 'bg-[#FFF0F0] border-4 border-[#FF6B6B]'
+          }`}
+        >
+          <p className="text-xl text-center leading-relaxed">{feedback.message}</p>
+        </Card>
+      )}
+
       <div className="space-y-6 mb-8">
-        {contacts.map((contact) => (
+        {trustedContacts.map((contact) => (
           <Card
             key={contact.id}
             onClick={() => setSelectedContact(contact.id)}
@@ -49,10 +73,16 @@ export function HelpPage({ onNavigate }: HelpPageProps) {
                 <User size={40} className="text-[#4A90E2]" strokeWidth={2} />
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl mb-1">{contact.name}</h3>
+                <h3 className="text-2xl mb-1">{getContactLabel(contact)}</h3>
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${contact.status === 'online' ? 'bg-[#51C878]' : 'bg-[#CBD5E1]'}`}></div>
-                  <span className="text-xl text-[#6B7280]">{contact.status === 'online' ? 'Disponível' : 'Indisponível'}</span>
+                  <div
+                    className={`w-3 h-3 rounded-full ${
+                      contact.status === 'online' ? 'bg-[#51C878]' : 'bg-[#CBD5E1]'
+                    }`}
+                  />
+                  <span className="text-xl text-[#6B7280]">
+                    {contact.status === 'online' ? 'Disponível' : 'Indisponível'}
+                  </span>
                 </div>
               </div>
               {selectedContact === contact.id && (
@@ -67,21 +97,13 @@ export function HelpPage({ onNavigate }: HelpPageProps) {
         ))}
       </div>
 
-      {selectedContact && (
+      {selectedContact ? (
         <div className="space-y-4">
-          <Button
-            variant="success"
-            fullWidth
-            icon={<Phone />}
-          >
+          <Button variant="success" fullWidth icon={<Phone />} onClick={handleCall}>
             Ligar agora
           </Button>
 
-          <Button
-            variant="primary"
-            fullWidth
-            icon={<MessageSquare />}
-          >
+          <Button variant="primary" fullWidth icon={<MessageSquare />} onClick={handleMessage}>
             Mandar mensagem
           </Button>
 
@@ -89,19 +111,22 @@ export function HelpPage({ onNavigate }: HelpPageProps) {
             variant="secondary"
             fullWidth
             icon={<Share2 />}
+            onClick={handleShare}
           >
-            Compartilhar dúvida
-          </Button>
-
-          <Button
-            variant="secondary"
-            fullWidth
-            onClick={() => setSelectedContact(null)}
-          >
-            Cancelar
+            {isSharing ? 'Compartilhando...' : 'Compartilhar dúvida'}
           </Button>
         </div>
+      ) : (
+        <Card className="bg-[#F8FAFB] mb-4">
+          <p className="text-xl text-[#6B7280] text-center leading-relaxed">
+            Toque em uma pessoa acima para ver as opções de ligação e mensagem.
+          </p>
+        </Card>
       )}
+
+      <Button variant="secondary" fullWidth onClick={onBack}>
+        Voltar
+      </Button>
     </div>
   );
 }

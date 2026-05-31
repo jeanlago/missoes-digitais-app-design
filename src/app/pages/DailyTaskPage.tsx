@@ -75,7 +75,7 @@ export function DailyTaskPage({ tutorialId, onNavigate }: DailyTaskPageProps) {
           variant="secondary"
           fullWidth
           icon={<HelpCircle />}
-          onClick={() => onNavigate('help')}
+          onClick={() => onNavigate('help', 'daily-task')}
         >
           Pedir ajuda
         </Button>
