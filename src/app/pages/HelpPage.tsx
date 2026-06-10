@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { Phone, MessageSquare, Share2, User } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Phone, MessageSquare, Share2, User } from 'lucide-react';
 import { trustedContacts, getContactLabel } from '../../data/trustedContacts';
 import { callContact, messageContact, shareDoubt } from '../../utils/helpActions';
 
@@ -14,10 +14,18 @@ export function HelpPage({ onNavigate, onBack }: HelpPageProps) {
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isSharing, setIsSharing] = useState(false);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!feedback) return;
+
+    requestAnimationFrame(() => {
+      feedbackRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }, [feedback]);
 
   const showFeedback = (type: 'success' | 'error', message: string) => {
     setFeedback({ type, message });
-    window.setTimeout(() => setFeedback(null), 4500);
   };
 
   const handleCall = () => {
@@ -43,20 +51,41 @@ export function HelpPage({ onNavigate, onBack }: HelpPageProps) {
   return (
     <div className="p-6 pt-24 pb-36 max-w-[600px] mx-auto">
       <div className="mb-8">
-        <h1 className="text-4xl mb-3">Pedir ajuda</h1>
-        <p className="text-2xl text-[#6B7280]">Escolha quem pode te ajudar</p>
+        <h1 className="text-4xl mb-3">Chamar uma pessoa</h1>
+        <p className="text-2xl text-[#6B7280]">Escolha um contato de confiança</p>
       </div>
 
       {feedback && (
-        <Card
-          className={`mb-6 ${
-            feedback.type === 'success'
-              ? 'bg-[#E8F8F0] border-4 border-[#51C878]'
-              : 'bg-[#FFF0F0] border-4 border-[#FF6B6B]'
-          }`}
-        >
-          <p className="text-xl text-center leading-relaxed">{feedback.message}</p>
-        </Card>
+        <div ref={feedbackRef}>
+          <Card
+            className={`mb-6 ${
+              feedback.type === 'success'
+                ? 'bg-[#E8F8F0] border-4 border-[#51C878]'
+                : 'bg-[#FFF0F0] border-4 border-[#FF6B6B]'
+            }`}
+          >
+            <div className="flex items-start gap-4">
+              {feedback.type === 'success' ? (
+                <CheckCircle2 size={48} className="text-[#51C878] shrink-0" strokeWidth={2.5} />
+              ) : (
+                <AlertTriangle size={48} className="text-[#FF6B6B] shrink-0" strokeWidth={2.5} />
+              )}
+              <div className="flex-1">
+                <h2 className="text-2xl mb-2">
+                  {feedback.type === 'success' ? 'Ação registrada' : 'Atenção'}
+                </h2>
+                <p className="text-xl leading-relaxed mb-4">{feedback.message}</p>
+                <Button
+                  variant={feedback.type === 'success' ? 'success' : 'emergency'}
+                  size="medium"
+                  onClick={() => setFeedback(null)}
+                >
+                  Entendi
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
       )}
 
       <div className="space-y-6 mb-8">
@@ -99,7 +128,7 @@ export function HelpPage({ onNavigate, onBack }: HelpPageProps) {
 
       {selectedContact ? (
         <div className="space-y-4">
-          <Button variant="success" fullWidth icon={<Phone />} onClick={handleCall}>
+          <Button variant="primary" fullWidth icon={<Phone />} onClick={handleCall}>
             Ligar agora
           </Button>
 

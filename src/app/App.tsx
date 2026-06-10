@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HomePage } from './pages/HomePage';
 import { DailyTaskPage } from './pages/DailyTaskPage';
 import { TaskStepsPage } from './pages/TaskStepsPage';
@@ -19,14 +19,57 @@ import { ExplainScreen } from './components/ExplainScreen';
 import { PageHeader } from './components/PageHeader';
 import { CURRENT_MISSION_ID, TutorialId } from '../data/tutorials';
 
+const HASH_TO_PAGE: Record<string, string> = {
+  inicio: 'home',
+  missoes: 'missions',
+  jogos: 'games',
+  manual: 'manual',
+};
+
+const PAGE_TO_HASH: Record<string, string> = {
+  home: '#inicio',
+  missions: '#missoes',
+  games: '#jogos',
+  manual: '#manual',
+};
+
+const getPageFromHash = () => {
+  if (typeof window === 'undefined') return 'home';
+  const hash = window.location.hash.replace('#', '').toLowerCase();
+  return HASH_TO_PAGE[hash] ?? 'home';
+};
+
+const updateHashForPage = (page: string) => {
+  if (typeof window === 'undefined') return;
+  const nextHash = PAGE_TO_HASH[page];
+  if (nextHash && window.location.hash !== nextHash) {
+    window.location.hash = nextHash;
+  }
+};
+
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [showExplain, setShowExplain] = useState(false);
+  const [currentPage, setCurrentPage] = useState(() => getPageFromHash());
+  const [explainPage, setExplainPage] = useState<string | null>(null);
   const [returnPage, setReturnPage] = useState('home');
   const [activeTutorialId, setActiveTutorialId] = useState<TutorialId>(CURRENT_MISSION_ID);
 
   const isMissionFlow = ['daily-task', 'task-steps', 'task-complete'].includes(currentPage);
   const needsPageHeader = !['home', 'missions', 'games', 'manual', 'lost'].includes(currentPage);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentPage(getPageFromHash());
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    });
+  }, [currentPage, activeTutorialId]);
 
   const handleNavigate = (page: string, from?: string, tutorialId?: TutorialId) => {
     if (from) {
@@ -40,6 +83,7 @@ export default function App() {
       setActiveTutorialId(tutorialId);
     }
     setCurrentPage(page);
+    updateHashForPage(page);
   };
 
   const handleOpenLost = () => {
@@ -48,6 +92,10 @@ export default function App() {
   };
 
   const resolveBackPage = (page: string) => (page === 'lost' ? 'home' : page);
+
+  const openExplanation = (page = currentPage) => {
+    setExplainPage(resolveBackPage(page));
+  };
 
   const handleBackFromHelp = () => {
     setCurrentPage(resolveBackPage(returnPage));
@@ -89,8 +137,9 @@ export default function App() {
             onNavigate={handleNavigate}
             previousPage={returnPage}
             onExplain={() => {
-              setShowExplain(true);
-              setCurrentPage(resolveBackPage(returnPage));
+              const pageToExplain = resolveBackPage(returnPage);
+              setCurrentPage(pageToExplain);
+              openExplanation(pageToExplain);
             }}
             onCancel={handleCloseLost}
           />
@@ -122,20 +171,21 @@ export default function App() {
             }
           }}
           onHelp={handleOpenLost}
+          onExplain={() => openExplanation(currentPage)}
         />
       )}
       <SwipeContainer
         currentPage={currentPage}
         onNavigate={handleNavigate}
         onHelp={handleOpenLost}
-        onExplain={() => setShowExplain(true)}
+        onExplain={() => openExplanation(currentPage)}
       >
         {renderPage()}
       </SwipeContainer>
       {currentPage !== 'lost' && !isMissionFlow && (
         <BottomNav currentPage={currentPage} onNavigate={handleNavigate} />
       )}
-      {showExplain && <ExplainScreen currentPage={currentPage} onClose={() => setShowExplain(false)} />}
+      {explainPage && <ExplainScreen currentPage={explainPage} onClose={() => setExplainPage(null)} />}
     </div>
   );
 }

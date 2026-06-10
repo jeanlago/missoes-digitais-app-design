@@ -1,6 +1,6 @@
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { HelpCircle } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { getTutorialById, TutorialId } from '../../data/tutorials';
 
 interface TutorialPageProps {
@@ -26,20 +26,22 @@ export function TutorialPage({ tutorialId, returnTo, onNavigate }: TutorialPageP
         <p className="text-2xl text-[#6B7280] leading-relaxed">{tutorial.description}</p>
       </div>
 
-      <Card className="mb-6 overflow-hidden p-0">
-        <video
-          className="w-full aspect-video bg-black"
-          controls
-          playsInline
-          preload="metadata"
-          src={tutorial.videoSrc}
-        >
-          Seu navegador não suporta a reprodução de vídeo.
-        </video>
-        <div className="p-5">
-          <p className="text-xl text-[#6B7280]">Assista ao vídeo com calma. Você pode pausar e voltar quando quiser.</p>
-        </div>
-      </Card>
+      {tutorial.videoSrc && (
+        <Card className="mb-6 overflow-hidden p-0">
+          <video
+            className="w-full aspect-video bg-black"
+            controls
+            playsInline
+            preload="metadata"
+            src={tutorial.videoSrc}
+          >
+            Seu navegador não suporta a reprodução de vídeo.
+          </video>
+          <div className="p-5">
+            <p className="text-xl text-[#6B7280]">Assista ao vídeo com calma. Você pode pausar e voltar quando quiser.</p>
+          </div>
+        </Card>
+      )}
 
       <Card className="mb-6">
         <h3 className="text-2xl mb-4 text-[#4A90E2]">Passo a passo:</h3>
@@ -71,10 +73,10 @@ export function TutorialPage({ tutorialId, returnTo, onNavigate }: TutorialPageP
         <Button
           variant="secondary"
           fullWidth
-          icon={<HelpCircle />}
+          icon={<Phone />}
           onClick={() => onNavigate('help', returnTo)}
         >
-          Pedir ajuda
+          Chamar uma pessoa
         </Button>
       </div>
     </div>

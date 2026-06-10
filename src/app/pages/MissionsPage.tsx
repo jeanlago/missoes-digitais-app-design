@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { Card } from '../components/Card';
 import { CheckCircle2, Circle, Lock, PlayCircle } from 'lucide-react';
 import { TutorialId } from '../../data/tutorials';
@@ -15,6 +16,9 @@ interface Mission {
 }
 
 export function MissionsPage({ onNavigate }: MissionsPageProps) {
+  const [lockedMissionId, setLockedMissionId] = useState<number | null>(null);
+  const lockedFeedbackRef = useRef<HTMLDivElement>(null);
+
   const missions: Mission[] = [
     { id: 1, title: 'Fazer uma ligação', status: 'completed', category: 'Chamadas' },
     {
@@ -49,9 +53,22 @@ export function MissionsPage({ onNavigate }: MissionsPageProps) {
   ];
 
   const completedCount = missions.filter((m) => m.status === 'completed').length;
+  const lockedMission = missions.find((mission) => mission.id === lockedMissionId);
+
+  useEffect(() => {
+    if (!lockedMissionId) return;
+
+    requestAnimationFrame(() => {
+      lockedFeedbackRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }, [lockedMissionId]);
 
   const handleMissionClick = (mission: Mission) => {
-    if (mission.status === 'locked' || !mission.tutorialId) return;
+    if (mission.status === 'locked') {
+      setLockedMissionId(mission.id);
+      return;
+    }
+    if (!mission.tutorialId) return;
     onNavigate('daily-task', 'missions', mission.tutorialId);
   };
 
@@ -74,6 +91,22 @@ export function MissionsPage({ onNavigate }: MissionsPageProps) {
         </Card>
       </div>
 
+      {lockedMission && (
+        <div ref={lockedFeedbackRef}>
+          <Card className="mb-6 bg-[#FFF9E6] border-4 border-[#FFD700]" aria-live="polite">
+            <div className="flex items-start gap-4">
+              <Lock size={44} className="text-[#D4A017] shrink-0" strokeWidth={2.5} />
+              <div>
+                <h2 className="text-2xl mb-2 text-[#1E293B]">Missão bloqueada</h2>
+                <p className="text-xl text-[#6B5F00] leading-relaxed">
+                  Conclua a missão anterior para liberar “{lockedMission.title}”.
+                </p>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+
       <div className="space-y-6">
         {missions.map((mission) => {
           const isCompleted = mission.status === 'completed';
@@ -85,12 +118,12 @@ export function MissionsPage({ onNavigate }: MissionsPageProps) {
           return (
             <Card
               key={mission.id}
-              onClick={isClickable ? () => handleMissionClick(mission) : undefined}
+              onClick={isClickable || isLocked ? () => handleMissionClick(mission) : undefined}
               className={`
                 ${isCompleted ? 'bg-[#E8F8F0] border-2 border-[#51C878]' : ''}
                 ${isCurrent ? 'bg-[#FFF9E6] border-4 border-[#FFD700]' : ''}
                 ${isLocked ? 'opacity-60' : ''}
-                ${isClickable ? 'cursor-pointer' : ''}
+                ${isClickable || isLocked ? 'cursor-pointer' : ''}
               `}
             >
               <div className="flex items-center gap-4">
@@ -106,6 +139,11 @@ export function MissionsPage({ onNavigate }: MissionsPageProps) {
                   <h3 className={`text-2xl ${isLocked ? 'text-[#94A3B8]' : ''}`}>{mission.title}</h3>
                   {hasTutorial && !isLocked && (
                     <p className="text-lg text-[#6B7280] mt-1">Toque para iniciar a missão</p>
+                  )}
+                  {isLocked && (
+                    <p className="text-lg text-[#64748B] mt-2">
+                      Conclua a missão anterior para liberar esta.
+                    </p>
                   )}
                 </div>
                 {hasTutorial && !isLocked && (

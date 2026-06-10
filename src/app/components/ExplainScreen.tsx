@@ -26,12 +26,12 @@ export function ExplainScreen({ currentPage, onClose }: ExplainScreenProps) {
       text: 'Aqui ficam vídeos e tutoriais explicativos. Você pode assistir sempre que tiver dúvida sobre como fazer algo no celular.'
     },
     help: {
-      title: 'Pedir Ajuda',
+      title: 'Chamar uma pessoa',
       text: 'Aqui você pode chamar uma pessoa de confiança para te ajudar. Escolha quem você quer contatar e clique para ligar ou mandar mensagem.'
     },
     lost: {
-      title: 'Estou Perdida',
-      text: 'Esta tela te ajuda quando você não sabe o que fazer. Escolha voltar ao início, chamar ajuda ou explicar a tela onde você estava.'
+      title: 'Não sei o que fazer',
+      text: 'Esta tela te ajuda quando você não sabe o que fazer. Escolha voltar ao início, chamar uma pessoa ou entender a tela onde você estava.'
     },
     'daily-task': {
       title: 'Tarefa do Dia',
@@ -43,7 +43,7 @@ export function ExplainScreen({ currentPage, onClose }: ExplainScreenProps) {
     },
     'task-complete': {
       title: 'Parabéns',
-      text: 'Você completou a tarefa! Aqui você vê o que conquistou e pode escolher repetir a tarefa ou ir para a próxima.'
+      text: 'Você completou a tarefa! Aqui você vê o que conquistou e pode escolher repetir a tarefa ou voltar para a lista de missões.'
     },
     quiz: {
       title: 'Quiz',

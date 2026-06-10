@@ -1,6 +1,6 @@
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
-import { Trophy, ArrowRight, Home, RotateCcw } from 'lucide-react';
+import { Trophy, Home, RotateCcw, Target } from 'lucide-react';
 import { getTutorialById, TutorialId } from '../../data/tutorials';
 
 interface TaskCompletePageProps {
@@ -34,8 +34,8 @@ export function TaskCompletePage({ tutorialId, onNavigate }: TaskCompletePagePro
       </Card>
 
       <div className="space-y-4">
-        <Button variant="success" fullWidth icon={<ArrowRight />} onClick={() => onNavigate('missions')}>
-          Próxima tarefa
+        <Button variant="primary" fullWidth icon={<Target />} onClick={() => onNavigate('missions')}>
+          Ver minhas missões
         </Button>
 
         <Button variant="secondary" fullWidth icon={<Home />} onClick={() => onNavigate('home')}>

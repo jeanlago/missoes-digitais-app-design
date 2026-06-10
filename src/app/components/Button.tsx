@@ -5,6 +5,7 @@ interface ButtonProps {
   size?: 'large' | 'medium';
   fullWidth?: boolean;
   icon?: React.ReactNode;
+  disabled?: boolean;
 }
 
 export function Button({
@@ -13,9 +14,10 @@ export function Button({
   variant = 'primary',
   size = 'large',
   fullWidth = false,
-  icon
+  icon,
+  disabled = false,
 }: ButtonProps) {
-  const baseClasses = "rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95";
+  const baseClasses = "rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 disabled:active:scale-100 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none";
 
   const variantClasses = {
     primary: "bg-[#4A90E2] text-white shadow-lg hover:bg-[#357ABD]",
@@ -32,6 +34,7 @@ export function Button({
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className={`
         ${baseClasses}
         ${variantClasses[variant]}

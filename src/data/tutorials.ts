@@ -137,7 +137,6 @@ export const tutorials: Tutorial[] = [
     title: 'Enviar um vídeo',
     description:
       'Aprenda a selecionar um vídeo do celular e enviar para um contato no WhatsApp.',
-    videoSrc: publicAsset('videos/whatsapp-video.mp4'),
     category: 'WhatsApp',
     steps: [
       'Abrir uma conversa no WhatsApp',

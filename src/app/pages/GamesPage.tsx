@@ -12,7 +12,7 @@ export function GamesPage({ onNavigate }: GamesPageProps) {
       title: 'Quiz de segurança',
       description: 'Aprenda a se proteger de golpes',
       icon: ShieldAlert,
-      color: 'from-[#FF6B6B] to-[#E85555]'
+      color: 'from-[#4A90E2] to-[#357ABD]'
     },
     {
       id: 'memory',

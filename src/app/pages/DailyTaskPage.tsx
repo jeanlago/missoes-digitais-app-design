@@ -1,6 +1,6 @@
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { HelpCircle } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { getTutorialById, TutorialId } from '../../data/tutorials';
 
 interface DailyTaskPageProps {
@@ -74,10 +74,10 @@ export function DailyTaskPage({ tutorialId, onNavigate }: DailyTaskPageProps) {
         <Button
           variant="secondary"
           fullWidth
-          icon={<HelpCircle />}
+          icon={<Phone />}
           onClick={() => onNavigate('help', 'daily-task')}
         >
-          Pedir ajuda
+          Chamar uma pessoa
         </Button>
 
         <Button variant="secondary" fullWidth onClick={() => onNavigate('home')}>

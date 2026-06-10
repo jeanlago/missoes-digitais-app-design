@@ -1,6 +1,6 @@
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { Home, Phone, Info, X } from 'lucide-react';
+import { ArrowLeft, Home, Phone, Info } from 'lucide-react';
 
 interface LostPageProps {
   onNavigate: (page: string, from?: string) => void;
@@ -25,7 +25,7 @@ export function LostPage({ onNavigate, previousPage, onExplain, onCancel }: Lost
 
         <div className="space-y-6">
           <Button
-            variant="success"
+            variant="secondary"
             fullWidth
             icon={<Home />}
             onClick={() => onNavigate('home')}
@@ -41,7 +41,7 @@ export function LostPage({ onNavigate, previousPage, onExplain, onCancel }: Lost
             onClick={() => onNavigate('help', previousPage)}
             size="large"
           >
-            Chamar ajuda
+            Chamar uma pessoa
           </Button>
 
           <Button
@@ -51,17 +51,17 @@ export function LostPage({ onNavigate, previousPage, onExplain, onCancel }: Lost
             onClick={onExplain}
             size="large"
           >
-            Explicar esta tela
+            O que é esta tela?
           </Button>
 
           <Button
             variant="secondary"
             fullWidth
-            icon={<X />}
+            icon={<ArrowLeft />}
             onClick={onCancel}
             size="large"
           >
-            Cancelar ação
+            Continuar onde eu estava
           </Button>
         </div>
       </div>

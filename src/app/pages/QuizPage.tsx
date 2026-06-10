@@ -27,6 +27,7 @@ export function QuizPage({ onNavigate }: QuizPageProps) {
   };
 
   const handleConfirm = () => {
+    if (selectedAnswer === null) return;
     setShowResult(true);
   };
 
@@ -35,12 +36,12 @@ export function QuizPage({ onNavigate }: QuizPageProps) {
   return (
     <div className="p-6 pt-24 pb-36 max-w-[600px] mx-auto">
       <div className="mb-8">
-        <div className="inline-block bg-[#FF6B6B] text-white px-6 py-3 rounded-full mb-4 text-xl">
+        <div className="inline-block bg-[#4A90E2] text-white px-6 py-3 rounded-full mb-4 text-xl">
           Quiz de segurança
         </div>
         <div className="text-2xl text-[#6B7280] mb-4">Pergunta 1 de 1</div>
         <div className="bg-[#E8F1F8] h-3 rounded-full overflow-hidden">
-          <div className="bg-[#FF6B6B] h-full" style={{ width: '100%' }}></div>
+          <div className="bg-[#4A90E2] h-full" style={{ width: '100%' }}></div>
         </div>
       </div>
 
@@ -81,9 +82,16 @@ export function QuizPage({ onNavigate }: QuizPageProps) {
             fullWidth
             onClick={handleConfirm}
             size="large"
+            disabled={selectedAnswer === null}
           >
             Confirmar resposta
           </Button>
+
+          {selectedAnswer === null && (
+            <p className="text-xl text-[#6B7280] text-center mt-4">
+              Escolha uma resposta para continuar.
+            </p>
+          )}
         </>
       ) : (
         <>

@@ -1,6 +1,5 @@
 import { useState, useRef, ReactNode } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { HelpButton } from './HelpButton';
+import { ChevronLeft, ChevronRight, CircleHelp, Info } from 'lucide-react';
 
 interface SwipeContainerProps {
   children: ReactNode;
@@ -74,6 +73,7 @@ export function SwipeContainer({ children, currentPage, onNavigate, onHelp, onEx
             <button
               onClick={goToPrevious}
               disabled={currentIndex === 0}
+              aria-label="Ir para a seção anterior"
               className={`p-2 rounded-xl transition-all shrink-0 ${
                 currentIndex === 0
                   ? 'opacity-0 pointer-events-none'
@@ -89,6 +89,7 @@ export function SwipeContainer({ children, currentPage, onNavigate, onHelp, onEx
                 {pages.map((page, index) => (
                   <div
                     key={page}
+                    aria-hidden="true"
                     className={`h-2 rounded-full transition-all ${
                       index === currentIndex
                         ? 'w-8 bg-[#4A90E2]'
@@ -102,6 +103,7 @@ export function SwipeContainer({ children, currentPage, onNavigate, onHelp, onEx
             <button
               onClick={goToNext}
               disabled={currentIndex === pages.length - 1}
+              aria-label="Ir para a próxima seção"
               className={`p-2 rounded-xl transition-all shrink-0 ${
                 currentIndex === pages.length - 1
                   ? 'opacity-0 pointer-events-none'
@@ -111,12 +113,30 @@ export function SwipeContainer({ children, currentPage, onNavigate, onHelp, onEx
               <ChevronRight size={32} strokeWidth={2.5} />
             </button>
           </div>
+
+          <div className="max-w-[600px] mx-auto grid grid-cols-2 gap-3 mt-3">
+            <button
+              onClick={onExplain}
+              className="min-h-[52px] rounded-xl bg-[#F0F7FF] text-[#4A90E2] border-2 border-[#CFE4FA] active:bg-[#E8F1F8] transition-all flex items-center justify-center gap-2 px-3"
+              aria-label="O que é esta tela?"
+            >
+              <Info size={24} strokeWidth={2.5} />
+              <span className="text-base leading-tight">O que é esta tela?</span>
+            </button>
+
+            <button
+              onClick={onHelp}
+              className="min-h-[52px] rounded-xl bg-[#FF6B6B] text-white active:bg-[#E85555] transition-all flex items-center justify-center gap-2 px-3"
+              aria-label="Não sei o que fazer"
+            >
+              <CircleHelp size={24} strokeWidth={2.5} />
+              <span className="text-base leading-tight">Não sei o que fazer</span>
+            </button>
+          </div>
         </div>
       )}
 
-      {showNavigation && <HelpButton variant="labeled" onClick={onHelp} />}
-
-      <div className={showNavigation ? 'pt-24' : ''}>
+      <div className={showNavigation ? 'pt-[152px]' : ''}>
 
         <div
           ref={containerRef}
