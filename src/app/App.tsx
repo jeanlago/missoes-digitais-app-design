@@ -66,9 +66,28 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
+    if (!('scrollRestoration' in window.history)) return;
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = 'manual';
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
+
+  useEffect(() => {
+    const scrollToPageTop = () => {
       window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    });
+    };
+
+    scrollToPageTop();
+    const frameId = requestAnimationFrame(scrollToPageTop);
+    const timeoutId = window.setTimeout(scrollToPageTop, 80);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
   }, [currentPage, activeTutorialId]);
 
   const handleNavigate = (page: string, from?: string, tutorialId?: TutorialId) => {
